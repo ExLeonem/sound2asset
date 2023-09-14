@@ -1,20 +1,29 @@
-import { IconButton, Input, InputGroup, InputLeftAddon, VStack } from "@chakra-ui/react";
+import {
+  AspectRatio,
+  FormControl,
+  HStack,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  Select,
+  VStack,
+} from "@chakra-ui/react";
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList,
+} from "@choc-ui/chakra-autocomplete";
 import { useState } from "react";
 import { BsSearch, BsPlusLg } from "react-icons/bs";
 
-interface SearhProps {
-  collection?: string[];
+interface SearchProps {
+  value?: string;
+  onChange?: (e: any) => void
 }
 
-const Search = ({ collection }: SearhProps) => {
-  const [searchString, setSearchString] = useState("");
-
-  const filterCollection = (searchString: string) => {
-    let searchLength = searchString.length;
-    return collection
-      ?.map((item) => item.slice(0, searchLength))
-      .filter((item) => item === searchString);
-  };
+const Search = ({ value, onChange }: SearchProps) => {
 
   return (
     <VStack>
@@ -22,11 +31,7 @@ const Search = ({ collection }: SearhProps) => {
         <InputLeftAddon>
           <BsSearch />
         </InputLeftAddon>
-        <Input
-          placeholder={"Search..."}
-          value={searchString}
-          onChange={(e) => setSearchString(e.target.value)}
-        />
+        <Input placeholder="Search..." value={value} onChange={onChange}/>
       </InputGroup>
     </VStack>
   );

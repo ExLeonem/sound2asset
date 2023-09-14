@@ -26,12 +26,21 @@ const dummyArtists = [
 
 
 const dummyGenres = [
-    "Rock",
-    "Metal",
-    "Pop",
-    "R&B",
-    "Klassik",
-    "Dub"
+  "Pop",
+  "Rock",
+  "Hip-Hop",
+  "Jazz",
+  "Classical",
+  "Electronic",
+  "R&B",
+  "Country",
+  "Reggae",
+  "Blues",
+  "Folk",
+  "Metal",
+  "Punk",
+  "Soul",
+  "Funk"
 ]
 
 interface SidebarProps {}
