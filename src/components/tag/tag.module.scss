@@ -1,0 +1,19 @@
+
+@import '../../assets//colors.module.scss';
+
+.tag {
+    cursor: pointer;
+    user-select: none;
+    padding: 6px 24px !important;
+    border-radius: 24px !important;
+    background-color: transparent !important;
+    
+    color: black !important;
+    border: 2px solid grey;
+
+    &.active {
+        background-color: $columbia_blue !important;
+        color: white;
+        border: 2px solid transparent !important;
+    }
+}

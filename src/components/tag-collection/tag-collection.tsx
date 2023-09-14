@@ -1,13 +1,13 @@
 import {HStack} from "@chakra-ui/react";
 
 
-interface TagCollection {
+interface TagCollectionProps {
     children: undefined | JSX.Element | JSX.Element[];
 }
 
-const TagCollection = ({ children }) => {
+const TagCollection = ({ children }: TagCollectionProps) => {
 
-  return <HStack >
+  return <HStack wrap="wrap">
       {children}
   </HStack>;
 };

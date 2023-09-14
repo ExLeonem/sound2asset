@@ -19,7 +19,6 @@ function App() {
       </Header>
       <FileUpload />
       <Sidebar/>
-      <Tag>today</Tag>
     </>
   )
 }
