@@ -59,6 +59,7 @@ const Selection = ({ header, values, atomToUse }: SelectionProps) => {
           );
         })}
       </TagCollection>
+      {filterAvailableValues().length === 0 ? <Text>There are no elements named '{searchString}'</Text> : null}
     </VStack>
   );
 };

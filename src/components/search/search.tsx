@@ -1,22 +1,10 @@
 import {
-  AspectRatio,
-  FormControl,
-  HStack,
-  IconButton,
   Input,
   InputGroup,
   InputLeftAddon,
-  Select,
   VStack,
 } from "@chakra-ui/react";
-import {
-  AutoComplete,
-  AutoCompleteInput,
-  AutoCompleteItem,
-  AutoCompleteList,
-} from "@choc-ui/chakra-autocomplete";
-import { useState } from "react";
-import { BsSearch, BsPlusLg } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
 
 interface SearchProps {
   value?: string;
