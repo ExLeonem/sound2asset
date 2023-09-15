@@ -9,7 +9,7 @@ interface HeaderProps {
 const Header = ({ main, children }: HeaderProps) => {
     return <VStack justifyContent="center" alignItems="center">
         <Text fontSize="4xl">{main}</Text>
-        <Text textAlign="center">{children}</Text>
+        <Text textAlign="center" marginTop="-16px">{children}</Text>
     </VStack>
 }
 

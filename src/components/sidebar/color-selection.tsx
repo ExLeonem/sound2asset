@@ -45,8 +45,8 @@ const ColorSelection = ({}: ColorSelectionProps) => {
     <VStack
       width="100%"
       alignItems="flex-start"
-      border="2px solid black"
-      p="32px 24px"
+      p="8px 24px"
+      pt="32px"
     >
       <Text>Farben auswählen</Text>
 

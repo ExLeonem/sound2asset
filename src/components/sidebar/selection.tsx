@@ -7,14 +7,15 @@ import { artists } from "../../lib/state";
 import { useAtom } from "jotai";
 
 interface SelectionProps {
-  header: string;
+  header?: string;
+  atomToUse: any;
   values?: string[];
   onRemove?: (idx: number) => () => void;
   onAdd?: (value: string) => () => void;
-  atomToUse: any;
+  searchable?: boolean;
 }
 
-const Selection = ({ header, values, atomToUse }: SelectionProps) => {
+const Selection = ({ header, values, atomToUse, searchable }: SelectionProps) => {
   const [searchString, setSearchString] = useState("");
   const [availableValues, setAvailableValues] = useState<string[]>(
     values || []
@@ -43,7 +44,7 @@ const Selection = ({ header, values, atomToUse }: SelectionProps) => {
   return (
     <VStack width="100%" alignItems="flex-start" p="12px 24px">
       <Text>{header}</Text>
-      <Search value={searchString} onChange={(e) => setSearchString(e.target.value)} />
+      {searchable? <Search value={searchString} onChange={(e) => setSearchString(e.target.value)} /> : null}
       <TagCollection>
         {filterAvailableValues().map((value, idx) => {
           let isActive = selectedValues.includes(value);

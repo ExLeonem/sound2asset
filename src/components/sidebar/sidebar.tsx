@@ -53,11 +53,11 @@ const Sidebar = ({}: SidebarProps) => {
         <Text fontSize="2xl">Prompt Einstellungen</Text>
       </CardHeader>
       <CardBody p="0px">
-        <VStack width="100%" border="2px solid black">
+        <VStack width="100%">
           <ColorSelection/>
-          <Selection header="Artists" values={dummyArtists} atomToUse={artists}/>
-          <Selection header="Styles" values={dummyStyles} atomToUse={styles}/>
-          <Selection header="Genres" values={dummyGenres} atomToUse={genres}/>
+          <Selection header="Artists" values={dummyArtists} atomToUse={artists} searchable={true}/>
+          <Selection header="Styles" values={dummyStyles} atomToUse={styles} searchable={true}/>
+          <Selection header="Genres" values={dummyGenres} atomToUse={genres} searchable={true}/>
         </VStack>
       </CardBody>
     </Card>
