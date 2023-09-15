@@ -17,11 +17,10 @@ class Api {
             genres: [],
             colors: []
         }
-        this.sendPostRequest(body);
+        return this.sendPostRequest(body);
     }
 
     recreateCover(file: string, lyrics: string, promptConfig: PromptConfig) {
-
         const body = {
             file: file,
             lyrics: lyrics,
@@ -30,11 +29,11 @@ class Api {
             genres: promptConfig.genres,
             colors: promptConfig.colors
         }
-        this.sendPostRequest(body);
+        return this.sendPostRequest(body);
     }
 
     sendPostRequest(body: PromptRequest) {
-        fetch(this.baseUrl, {
+        return fetch(`${this.baseUrl}/create`, {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -42,6 +41,10 @@ class Api {
             },
             body: JSON.stringify(body)
         });
+    }
+
+    buildUrl(segments: string[]) {
+        return [this.baseUrl, ...segments].join("/")
     }
 }
 
