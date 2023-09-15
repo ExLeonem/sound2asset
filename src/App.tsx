@@ -2,9 +2,7 @@ import "./App.css";
 import Header from "./components/header/header.tsx";
 import FileUpload from "./components/file-upload/file-upload.tsx";
 import Sidebar from "./components/sidebar/sidebar.tsx";
-import {Button, Grid, GridItem, HStack, Textarea, VStack,} from "@chakra-ui/react";
-import {useAtom} from "jotai";
-import {Button, Grid, GridItem, HStack, Text, Textarea, VStack,} from "@chakra-ui/react";
+import {Button, Grid, GridItem, HStack, Text, Textarea, VStack} from "@chakra-ui/react";
 import {useAtom} from "jotai";
 import {
   AppState,
