@@ -2,33 +2,52 @@ import "./App.css";
 import Header from "./components/header/header.tsx";
 import FileUpload from "./components/file-upload/file-upload.tsx";
 import Sidebar from "./components/sidebar/sidebar.tsx";
-import {Button, Grid, GridItem, HStack, Text, Textarea, useToast, VStack} from "@chakra-ui/react";
+import Tag from "./components/tag/tag.tsx";
+import {BsChevronDoubleLeft, BsChevronDoubleRight} from "react-icons/bs"
+import {
+  Button,
+  HStack,
+  Textarea,
+  VStack,
+  Text,
+  Grid,
+  GridItem,
+  flexbox,
+  Flex,
+  Slide,
+Spinner,
+  useDisclosure,
+  useToast
+} from "@chakra-ui/react";
 import {useAtom} from "jotai";
 import {
-  AppState,
-  artists,
-  assets,
-  audioFile,
-  colors,
-  coverIdx,
-  dummyAssetTypes,
-  dummySocialMediaTypes,
-  genres,
-  lyrics,
-  socialMediaTypes,
-  stage,
-  styles,
-  dummyTshirtUrls
+    albumCoverUrls,
+    AppState,
+    artists,
+    assets,
+    audioFile,
+    colors,
+    coverIdx,
+    dummyAssetTypes,
+    dummySocialMediaTypes,
+    dummyTshirtUrls,
+    genres,
+    lyrics,
+    socialMediaTypes,
+    stage,
+    styles
 } from "./lib/state.ts";
 import ButtonGroup from "./components/button-group/button-group.tsx";
 import CoverPreview from "./components/cover-preview/cover-preview.tsx";
 import Selection from "./components/sidebar/selection.tsx";
 import MerchPreview from "./components/merch-preview/merch-preview";
 import Api from "./lib/api.ts";
+import {useState} from "react";
 
-const api = new Api("localhost/");
+const api = new Api("https://39ad-217-24-207-26.ngrok-free.app");
 
 function App() {
+  const [requestIsLoading, setRequestIsLoading] = useState(false);
   const [appState, setAppState] = useAtom(stage);
   const [songLyrics, setSongLyrics] = useAtom(lyrics);
   const [selectedCover, setSelectedCover] = useAtom(coverIdx);
@@ -37,93 +56,162 @@ function App() {
   const [selectedGenres, setSelectedGenres] = useAtom(genres);
   const [selectedArtists, setSelectedArtists] = useAtom(artists);
   const [selectedColors, setSelectedColors] = useAtom(colors);
+  const [loadedCoverUrls, setLoadedCoverUrls] = useAtom(albumCoverUrls)
+  const toast = useToast();
+  const { isOpen, onToggle } = useDisclosure()
   const [merch] = useAtom(assets);
 
-  const createCoversAndUpdate = () => {
-    api.createCover(fileToUpload, songLyrics);
-    setAppState(AppState.COVER);
+  const sliderStyles = {
+    container: {
+      display: 'flex'
+    },
+    sidebarButton : {
+      border: 'none',
+      marginTop: '30px',
+      backgroundColor: 'white',
+      fontSize: 'x-large',
+      zIndex: 10
+    }
   }
 
-  const toast = useToast();
+  const createCoversAndUpdate = () => {
+    setRequestIsLoading(true);
+    api.createCover(fileToUpload, songLyrics)
+        .then((res) => res.json().then(result => {
+          console.log("Got json");
+          setLoadedCoverUrls(result);
+          setAppState(AppState.COVER)
+          setRequestIsLoading(false);
+        }))
+        .catch(err => {
+          toast({
+            title: "A wild error appeared.",
+            description: "Please check the logs.",
+            status: "error",
+            position: "top-right",
+            duration: 9000,
+            isClosable: true
+          });
+          setRequestIsLoading(false);
+        })
+  }
   const displayLogo =  <img style={{width: 50 + 'px', borderRadius: 20 + '%'}} src="https://ideogram.ai/api/images/direct/jW2V5BFJShSYaf3Ed0l2Lw"></img>
+
   if (appState === AppState.LYRICS) {
+
+    let form = null;
+    if (!requestIsLoading) {
+      form = <>
+        <FileUpload />
+        <Textarea
+            placeholder="Lyrics eingeben..."
+            value={songLyrics}
+            onChange={(e) => setSongLyrics(e.target.value)}
+        />
+      </>;
+    }
+
     return (
       <>
-          <div align='center'>{displayLogo}</div>
+        <div align='center'>{displayLogo}</div>
+        <Header main={"Sound2Assets"}>
+          Verwandle deine Melodien in trendige Artikel!
+          Unser hochmodernes KI-Tool gestaltet einzigartige Merchandise-Artikel, inspiriert von deinen Lieblingsliedtexten und der Audiodatei.
 
-          <Header main={"Sound2Assets"}>
-            Verwandle deine Melodien in trendige Artikel!
-            Unser hochmodernes KI-Tool gestaltet einzigartige Merchandise-Artikel, inspiriert von deinen Lieblingsliedtexten und der Audiodatei.
+          Damit wird deine musikalische Leidenschaft auf ganz neue Art tragbar und teilbar.
+        </Header>
 
-            Damit wird deine musikalische Leidenschaft auf ganz neue Art tragbar und teilbar.
-          </Header>
+        <VStack alignItems={requestIsLoading ? "center": "flex-start"} marginTop="32px" gap={4}>
+          {requestIsLoading ? <Spinner /> : null}
+          {form}
+        </VStack>
 
-          <VStack alignItems="flex-start" marginTop="32px" gap={4}>
-            <FileUpload />
-            <Textarea
-                placeholder="Lyrics eingeben..."
-                value={songLyrics}
-                onChange={(e) => setSongLyrics(e.target.value)}
-            />
-          </VStack>
-
-          <ButtonGroup>
-            <Button onClick={createCoversAndUpdate}>Next</Button>
-          </ButtonGroup>
-
+        <ButtonGroup>
+          <Button onClick={createCoversAndUpdate}>Next</Button>
+        </ButtonGroup>
       </>
     );
   }
 
-  const recreateCovers = () => {
-    let promptConfig = {
-      artists: selectedArtists,
-      styles: selectedStyles,
-      genres: selectedGenres,
-      colors: selectedColors
-    };
-    api.recreateCover(fileToUpload, songLyrics, promptConfig);
-  }
+    console.log(loadedCoverUrls);
+
+    const recreateCovers = () => {
+        let promptConfig = {
+            artists: selectedArtists,
+            styles: selectedStyles,
+            genres: selectedGenres,
+            colors: selectedColors
+        };
+        setRequestIsLoading(true);
+        api.recreateCover(fileToUpload, songLyrics, promptConfig)
+            .then((res) => res.json().then(result => {
+                console.log("Got json");
+                setLoadedCoverUrls(result);
+                setAppState(AppState.COVER)
+                setRequestIsLoading(false);
+            }))
+            .catch(err => {
+                console.log(err)
+                toast({
+                    title: "A wild error appeared.",
+                    description: "Please check the logs.",
+                    status: "error",
+                    position: "top-right",
+                    duration: 9000,
+                    isClosable: true
+                })
+                setRequestIsLoading(false);
+            })
+    }
 
   if (appState === AppState.COVER) {
+    const AlbumCoverPreview = () => {
+      return (
+          <Grid
+              templateColumns="repeat(2, 1fr)"
+              templateRows="repeat(2, 1fr)"
+              gap={6}
+              zIndex={5}
+          >
+            {loadedCoverUrls.imageUrls.map((url, idx) => <GridItem>
+              <CoverPreview key={`cover-preview-${idx}`} idx={idx} url={url} />
+            </GridItem>)}
+          </Grid>
+      )
+    }
+
     return (
       <HStack alignItems="flex-start" justifyContent="space-between">
         <VStack>
           {displayLogo}
-          <Header main={"Wähle ein Cover"}>
-            Hier sind einige von KI erstellte Cover, die zu deinem Lied passen könnten.
-          </Header>
+          <HStack>
+            <Header main={"Wähle ein Cover"}>
+              Hier sind einige von KI erstellte Cover, die zu deinem Lied passen könnten.
+
+            </Header>
+            <Button style={sliderStyles.sidebarButton} onClick={onToggle}>
+              {!isOpen ? <BsChevronDoubleLeft/> : <BsChevronDoubleRight/>}
+            </Button>
+          </HStack>
 
           {/* <IconButton position="absolute" right="32px" top="32px" icon={<FaChevronLeft/>} aria-label="open sidebar"/> */}
+          <HStack justifyContent="center" padding="32px 0px">
+              {requestIsLoading ? <Spinner /> : null}
+              {requestIsLoading ? null : <AlbumCoverPreview />}
+          </HStack>
 
-            <HStack justifyContent="center" padding="32px 0px">
-              <Grid
-                  templateColumns="repeat(2, 1fr)"
-                  templateRows="repeat(2, 1fr)"
-                  gap={6}
-              >
-                <GridItem>
-                  <CoverPreview idx={0} url={"https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=0.752xw:1.00xh;0.175xw,0&resize=1200:*"}/>
-                </GridItem>
-                <GridItem>
-                  <CoverPreview idx={1} url={""}/>
-                </GridItem>
-                <GridItem>
-                  <CoverPreview idx={2} url={""}/>
-                </GridItem>
-                <GridItem>
-                  <CoverPreview idx={3} url={""}/>
-                </GridItem>
-              </Grid>
-            </HStack>
-
-          <ButtonGroup>
-            <Button onClick={(e) => setAppState(AppState.LYRICS)}>Zurück</Button>
-            <Button onClick={recreateCovers}>Neu erstellen</Button>
-            {selectedCover !== -1 ? <Button onClick={e => setAppState(AppState.ASSETS)}>Weiter</Button> : null}
+          <ButtonGroup >
+            <Button zIndex={10} onClick={(e) => setAppState(AppState.LYRICS)}>Zurück</Button>
+            <Button zIndex={10} onClick={recreateCovers}>Neu erstellen</Button>
+            {selectedCover !== -1 ? <Button zIndex={10} onClick={e => setAppState(AppState.ASSETS)}>Next</Button> : null}
           </ButtonGroup>
         </VStack>
-        <Sidebar />
+        <div style={sliderStyles.container}>
+
+          <Slide in={isOpen} style={{ zIndex: 3 }}>
+            <Sidebar/>
+          </Slide>
+        </div>
       </HStack>
     );
   }
@@ -192,8 +280,6 @@ function App() {
           </ButtonGroup>
         </div>
       </VStack>
-
-
     </>
   }
 }

@@ -19,6 +19,7 @@ const CoverPreview = ({ idx, url }: CoverPreviewProps) => {
     }
 
     const toggleSelectCover = (e: any) => {
+        console.log("select");
         if (selectedCover === idx) {
             setSelectedCover(-1);
             setSelectredCoverUrl("");
@@ -29,8 +30,8 @@ const CoverPreview = ({ idx, url }: CoverPreviewProps) => {
     }
 
 
-    return <Box className={classes.join(" ")} backgroundColor="grey" onClick={toggleSelectCover}>
-        <img src={url}/>
+    return <Box className={classes.join(" ")} backgroundColor="#E9E9E9" onClick={toggleSelectCover}>
+        <img src={url} width="100%" height={"100%"}/>
     </Box>
 }
 

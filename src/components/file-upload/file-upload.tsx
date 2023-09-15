@@ -18,12 +18,11 @@ const FileUpload = () => {
   const setFileInState = (e) => {
     let file = null;
     if (e.target.files!) {
-      console.log("File uploaded");
-      file = e.target.files;
-      setFileToUpload(e.target.files[0])
-
+      console.log("File uploaded...");
+      file = e.target.files[0];
       const fileReader = new FileReader();
       fileReader.readAsBinaryString(file);
+
       fileReader.onload = () => {
         let fileBinary = fileReader.result;
         setFileToUpload(btoa(fileBinary as string))

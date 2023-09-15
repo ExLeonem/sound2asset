@@ -7,7 +7,6 @@ import {
   InputGroup,
   InputLeftAddon,
   Stack,
-  Tag,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -84,7 +83,7 @@ const ColorSelection = ({}: ColorSelectionProps) => {
       {/* Colors selected */}
       <TagCollection>
         {colors.map((color, idx) => (
-          <Color key={`color-${color}`} onDelete={removeColor(idx)}>
+          <Color key={`color-${idx}-${color}`} onDelete={removeColor(idx)}>
             {color}
           </Color>
         ))}

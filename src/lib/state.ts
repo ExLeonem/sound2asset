@@ -22,10 +22,22 @@ export interface PromptRequest extends PromptConfig {
 
 export const coverIdx = atom<number>(-1);
 export const selectedCoverUrl = atom<string>("");
+
+const initStateLoadedCovers = {
+    imageUrls: [],
+    interpretation: "",
+    imagePrompt: ""
+}
+export const albumCoverUrls = atom<PromptResponse>(initStateLoadedCovers)
 export const lyrics = atom<string>("");
 
-export const socialMediaTypes = atom<string[]>([]);
+export interface PromptResponse {
+    imageUrls: string[];
+    interpretation: string;
+    imagePrompt: string;
+}
 
+export const socialMediaTypes = atom<PromptResponse>([]);
 export const assetsToCreate = atom<string[]>([]);
 export const socialMediaIntegration = atom<string[]>([]);
 
