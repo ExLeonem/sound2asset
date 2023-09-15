@@ -45,27 +45,32 @@ function App() {
   }
 
   const toast = useToast();
-
+  const displayLogo =  <img style={{width: 50 + 'px', borderRadius: 20 + '%'}} src="https://ideogram.ai/api/images/direct/jW2V5BFJShSYaf3Ed0l2Lw"></img>
   if (appState === AppState.LYRICS) {
     return (
       <>
-        <Header main={"Sound2assets"}>
-          Das beste Tool der Welt, um dir ganz unkompliziert Merch zu deinem neusten Song zu generieren!
-          Damit die KI Material hat um dir zu helfen, lade deinen Song hoch und gib die Lyrics zu deinem Song ein.
-        </Header>
+          <div align='center'>{displayLogo}</div>
 
-        <VStack alignItems="flex-start" marginTop="32px" gap={4}>
-          <FileUpload />
-          <Textarea
-            placeholder="Lyrics eingeben..."
-            value={songLyrics}
-            onChange={(e) => setSongLyrics(e.target.value)}
-          />
-        </VStack>
+          <Header main={"Sound2Assets"}>
+            Verwandle deine Melodien in trendige Artikel!
+            Unser hochmodernes KI-Tool gestaltet einzigartige Merchandise-Artikel, inspiriert von deinen Lieblingsliedtexten und der Audiodatei.
 
-        <ButtonGroup>
-          <Button onClick={createCoversAndUpdate}>Next</Button>
-        </ButtonGroup>
+            Damit wird deine musikalische Leidenschaft auf ganz neue Art tragbar und teilbar.
+          </Header>
+
+          <VStack alignItems="flex-start" marginTop="32px" gap={4}>
+            <FileUpload />
+            <Textarea
+                placeholder="Lyrics eingeben..."
+                value={songLyrics}
+                onChange={(e) => setSongLyrics(e.target.value)}
+            />
+          </VStack>
+
+          <ButtonGroup>
+            <Button onClick={createCoversAndUpdate}>Next</Button>
+          </ButtonGroup>
+
       </>
     );
   }
@@ -84,6 +89,7 @@ function App() {
     return (
       <HStack alignItems="flex-start" justifyContent="space-between">
         <VStack>
+          {displayLogo}
           <Header main={"Wähle ein Cover"}>
             Hier sind einige von KI erstellte Cover, die zu deinem Lied passen könnten.
           </Header>
@@ -112,9 +118,9 @@ function App() {
             </HStack>
 
           <ButtonGroup>
-            <Button onClick={(e) => setAppState(AppState.LYRICS)}>Back</Button>
+            <Button onClick={(e) => setAppState(AppState.LYRICS)}>Zurück</Button>
             <Button onClick={recreateCovers}>Neu erstellen</Button>
-            {selectedCover !== -1 ? <Button onClick={e => setAppState(AppState.ASSETS)}>Next</Button> : null}
+            {selectedCover !== -1 ? <Button onClick={e => setAppState(AppState.ASSETS)}>Weiter</Button> : null}
           </ButtonGroup>
         </VStack>
         <Sidebar />
@@ -160,29 +166,33 @@ function App() {
 
   if (appState === AppState.ASSETS) {
     return <>
-      <Header main="Poster, Merch & Co">
-      Welche Assets sollen erstellt werden?
-      </Header>
+      <VStack>
+        {displayLogo}
+        <Header main="Poster, Merch & Co">
+          Welche Assets sollen erstellt werden?
+        </Header>
 
-      <Selection values={dummyAssetTypes} atomToUse={assets}/>
-      {tshirts}
-      <Header main="Social Media Posts">
-        Welche Social Media Posts möchtest du dir generieren lassen?
-      </Header>
+        <Selection values={dummyAssetTypes} atomToUse={assets}/>
+        {tshirts}
+        <Header main="Social Media Posts">
+          Welche Social Media Posts möchtest du dir generieren lassen?
+        </Header>
 
-      <Selection values={dummySocialMediaTypes} atomToUse={socialMediaTypes}/>
-      <div align="right">
-        <ButtonGroup>
-          <Button onClick={(e) => setAppState(AppState.COVER)}>Zurück</Button>
-          <Button align="right" onClick={(e) => toast({
-            title: 'Daten heruntergeladen',
-            description: "Der Merchandise wurde für dich heruntergeladen",
-            status: 'success',
-            duration: 9000,
-            isClosable: true,
-          })}>Herunterladen</Button>
-        </ButtonGroup>
-      </div>
+        <Selection values={dummySocialMediaTypes} atomToUse={socialMediaTypes}/>
+        <div align="right">
+          <ButtonGroup>
+            <Button onClick={(e) => setAppState(AppState.COVER)}>Zurück</Button>
+            <Button align="right" onClick={(e) => toast({
+              title: 'Daten heruntergeladen',
+              description: "Der Merchandise wurde für dich heruntergeladen",
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            })}>Herunterladen</Button>
+          </ButtonGroup>
+        </div>
+      </VStack>
+
 
     </>
   }
