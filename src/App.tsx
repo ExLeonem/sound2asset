@@ -2,6 +2,8 @@ import "./App.css";
 import Header from "./components/header/header.tsx";
 import FileUpload from "./components/file-upload/file-upload.tsx";
 import Sidebar from "./components/sidebar/sidebar.tsx";
+import {Button, Grid, GridItem, HStack, Textarea, VStack,} from "@chakra-ui/react";
+import {useAtom} from "jotai";
 import {Button, Grid, GridItem, HStack, Text, Textarea, VStack,} from "@chakra-ui/react";
 import {useAtom} from "jotai";
 import {
@@ -17,11 +19,13 @@ import {
   lyrics,
   socialMediaTypes,
   stage,
-  styles
+  styles,
+  dummyTshirtUrls
 } from "./lib/state.ts";
 import ButtonGroup from "./components/button-group/button-group.tsx";
 import CoverPreview from "./components/cover-preview/cover-preview.tsx";
 import Selection from "./components/sidebar/selection.tsx";
+import MerchPreview from "./components/merch-preview/merch-preview";
 import Api from "./lib/api.ts";
 
 const api = new Api("localhost/");
@@ -35,6 +39,7 @@ function App() {
   const [selectedGenres, setSelectedGenres] = useAtom(genres);
   const [selectedArtists, setSelectedArtists] = useAtom(artists);
   const [selectedColors, setSelectedColors] = useAtom(colors);
+  const [merch] = useAtom(assets);
 
   const createCoversAndUpdate = () => {
     api.createCover(fileToUpload, songLyrics);
@@ -86,26 +91,26 @@ function App() {
 
           {/* <IconButton position="absolute" right="32px" top="32px" icon={<FaChevronLeft/>} aria-label="open sidebar"/> */}
 
-          <HStack justifyContent="center" padding="32px 0px">
-            <Grid
-              templateColumns="repeat(2, 1fr)"
-              templateRows="repeat(2, 1fr)"
-              gap={6}
-            >
-              <GridItem>
-                <CoverPreview idx={0} />
-              </GridItem>
-              <GridItem>
-                <CoverPreview idx={1} />
-              </GridItem>
-              <GridItem>
-                <CoverPreview idx={2} />
-              </GridItem>
-              <GridItem>
-                <CoverPreview idx={3} />
-              </GridItem>
-            </Grid>
-          </HStack>
+            <HStack justifyContent="center" padding="32px 0px">
+              <Grid
+                  templateColumns="repeat(2, 1fr)"
+                  templateRows="repeat(2, 1fr)"
+                  gap={6}
+              >
+                <GridItem>
+                  <CoverPreview idx={0} url={"https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=0.752xw:1.00xh;0.175xw,0&resize=1200:*"}/>
+                </GridItem>
+                <GridItem>
+                  <CoverPreview idx={1} url={""}/>
+                </GridItem>
+                <GridItem>
+                  <CoverPreview idx={2} url={""}/>
+                </GridItem>
+                <GridItem>
+                  <CoverPreview idx={3} url={""}/>
+                </GridItem>
+              </Grid>
+            </HStack>
 
           <ButtonGroup>
             <Button onClick={(e) => setAppState(AppState.LYRICS)}>Back</Button>
@@ -117,6 +122,30 @@ function App() {
       </HStack>
     );
   }
+  console.log(merch)
+  let tshirts = null;
+  if (merch.includes(dummyAssetTypes[1])) {
+    tshirts =
+        <HStack justifyContent="center" padding="32px 0px">
+          <Grid
+              templateColumns="repeat(4, 1fr)"
+              gap={6}
+          >
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+          </Grid>
+        </HStack>
+  }
 
   if (appState === AppState.ASSETS) {
     return <>
@@ -125,9 +154,9 @@ function App() {
       </Header>
 
       <Selection values={dummyAssetTypes} atomToUse={assets}/>
-
+      {tshirts}
       <Header main="Social Media Posts">
-      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
       </Header>
 
       <Selection values={dummySocialMediaTypes} atomToUse={socialMediaTypes}/>

@@ -21,6 +21,7 @@ export interface PromptRequest extends PromptConfig {
 }
 
 export const coverIdx = atom<number>(-1);
+export const selectedCoverUrl = atom<string>("");
 export const lyrics = atom<string>("");
 
 export const socialMediaTypes = atom<string[]>([]);
@@ -51,8 +52,13 @@ const dummySocialMediaTypes = [
     "Xing"
 ]
 
+const dummyTshirtUrls = [
+    "https://media.istockphoto.com/id/482948743/photo/blank-white-t-shirt-front-with-clipping-path.jpg?s=612x612&w=0&k=20&c=cJG_B0mOIG42FKtC_rqIeZCClYOj7UCFNNs9WTkYEEE="
+]
+
 export {
     AppState,
     dummyAssetTypes,
-    dummySocialMediaTypes
+    dummySocialMediaTypes,
+    dummyTshirtUrls
 };

@@ -20,7 +20,7 @@ const Selection = ({ header, values, atomToUse, searchable }: SelectionProps) =>
   const [availableValues, setAvailableValues] = useState<string[]>(
     values || []
   );
-  const [selectedValues, setSelectedValues] = useAtom(artists);
+  const [selectedValues, setSelectedValues] = useAtom(atomToUse);
 
   const filterAvailableValues = () => {
     if (searchString === "" || searchString === undefined) {
