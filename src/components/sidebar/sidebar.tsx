@@ -2,6 +2,7 @@ import { Card, CardBody, CardHeader, Text, VStack } from "@chakra-ui/react";
 import Selection from './selection.tsx';
 import { artists, genres, styles } from "../../lib/state.ts";
 import ColorSelection from "./color-selection.tsx";
+import sidebarStyles from './sidebar.module.scss'
 
 const dummyStyles = [
     "Digital",
@@ -48,7 +49,7 @@ interface SidebarProps {}
 const Sidebar = ({}: SidebarProps) => {
 
   return (
-    <Card width="40%" >
+    <Card width="30%" className={sidebarStyles.Sidebar}>
       <CardHeader>
         <Text fontSize="2xl">Prompt Einstellungen</Text>
       </CardHeader>

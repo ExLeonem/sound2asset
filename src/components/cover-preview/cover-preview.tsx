@@ -24,7 +24,7 @@ const CoverPreview = ({ idx }: CoverPreviewProps) => {
     }
 
 
-    return <Box className={classes.join(" ")} backgroundColor="grey" onClick={toggleSelectCover}>
+    return <Box className={classes.join(" ")} backgroundColor="#E9E9E9" onClick={toggleSelectCover}>
   
     </Box>
 }
