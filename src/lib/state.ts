@@ -6,6 +6,8 @@ export const styles = atom<string[]>([]);
 export const genres = atom<string[]>([]);
 export const artists = atom<string[]>([]);
 export const assets = atom<string[]>([]);
+export const audio_file = atom<File>(null);
+
 
 export const coverIdx = atom<number>(-1);
 export const lyrics = atom<string>("");
