@@ -2,16 +2,22 @@ import "./App.css";
 import Header from "./components/header/header.tsx";
 import FileUpload from "./components/file-upload/file-upload.tsx";
 import Sidebar from "./components/sidebar/sidebar.tsx";
+import Tag from "./components/tag/tag.tsx";
+import {BsChevronDoubleLeft, BsChevronDoubleRight} from "react-icons/bs"
 import {
-    Button,
-    Grid,
-    GridItem,
-    HStack,
-    Spinner,
-    Text,
-    Textarea,
-    useToast,
-    VStack
+  Button,
+  HStack,
+  Textarea,
+  VStack,
+  Text,
+  Grid,
+  GridItem,
+  flexbox,
+  Flex,
+  Slide,
+Spinner,
+  useDisclosure,
+  useToast
 } from "@chakra-ui/react";
 import {useAtom} from "jotai";
 import {
@@ -41,41 +47,55 @@ import {useState} from "react";
 const api = new Api("https://39ad-217-24-207-26.ngrok-free.app");
 
 function App() {
-    const [requestIsLoading, setRequestIsLoading] = useState(false);
-    const [appState, setAppState] = useAtom(stage);
-    const [songLyrics, setSongLyrics] = useAtom(lyrics);
-    const [selectedCover, setSelectedCover] = useAtom(coverIdx);
-    const [fileToUpload, setFileToUpload] = useAtom(audioFile);
-    const [selectedStyles, setSelectedStyles] = useAtom(styles);
-    const [selectedGenres, setSelectedGenres] = useAtom(genres);
-    const [selectedArtists, setSelectedArtists] = useAtom(artists);
-    const [selectedColors, setSelectedColors] = useAtom(colors);
-    const [loadedCoverUrls, setLoadedCoverUrls] = useAtom(albumCoverUrls)
-    const toast = useToast();
+  const [requestIsLoading, setRequestIsLoading] = useState(false);
+  const [appState, setAppState] = useAtom(stage);
+  const [songLyrics, setSongLyrics] = useAtom(lyrics);
+  const [selectedCover, setSelectedCover] = useAtom(coverIdx);
+  const [fileToUpload, setFileToUpload] = useAtom(audioFile);
+  const [selectedStyles, setSelectedStyles] = useAtom(styles);
+  const [selectedGenres, setSelectedGenres] = useAtom(genres);
+  const [selectedArtists, setSelectedArtists] = useAtom(artists);
+  const [selectedColors, setSelectedColors] = useAtom(colors);
+  const [loadedCoverUrls, setLoadedCoverUrls] = useAtom(albumCoverUrls)
+  const toast = useToast();
+  const { isOpen, onToggle } = useDisclosure()
+  const [merch] = useAtom(assets);
 
-    const [merch] = useAtom(assets);
-
-    const createCoversAndUpdate = () => {
-        setRequestIsLoading(true);
-        api.createCover(fileToUpload, songLyrics)
-            .then((res) => res.json().then(result => {
-                console.log("Got json");
-                setLoadedCoverUrls(result);
-                setAppState(AppState.COVER)
-                setRequestIsLoading(false);
-            }))
-            .catch(err => {
-                toast({
-                    title: "A wild error appeared.",
-                    description: "Please check the logs.",
-                    status: "error",
-                    position: "top-right",
-                    duration: 9000,
-                    isClosable: true
-                });
-                setRequestIsLoading(false);
-            })
+  const sliderStyles = {
+    container: {
+      display: 'flex'
+    },
+    sidebarButton : {
+      border: 'none',
+      marginTop: '30px',
+      backgroundColor: 'white',
+      fontSize: 'x-large',
+      zIndex: 10
     }
+  }
+
+  const createCoversAndUpdate = () => {
+    setRequestIsLoading(true);
+    api.createCover(fileToUpload, songLyrics)
+        .then((res) => res.json().then(result => {
+          console.log("Got json");
+          setLoadedCoverUrls(result);
+          setAppState(AppState.COVER)
+          setRequestIsLoading(false);
+        }))
+        .catch(err => {
+          toast({
+            title: "A wild error appeared.",
+            description: "Please check the logs.",
+            status: "error",
+            position: "top-right",
+            duration: 9000,
+            isClosable: true
+          });
+          setRequestIsLoading(false);
+        })
+  }
+
 
     if (appState === AppState.LYRICS) {
 
@@ -149,6 +169,7 @@ function App() {
                     templateColumns="repeat(2, 1fr)"
                     templateRows="repeat(2, 1fr)"
                     gap={6}
+                    zIndex={5}
                 >
                     {loadedCoverUrls.imageUrls.map((url, idx) => <GridItem>
                         <CoverPreview key={`cover-preview-${idx}`} idx={idx} url={url} />
@@ -160,9 +181,14 @@ function App() {
         return (
             <HStack alignItems="flex-start" justifyContent="space-between">
                 <VStack>
-                    <Header main={"Select a cover"}>
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                    </Header>
+                    <HStack>
+                        <Header main={"Select a cover"}>
+                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                        </Header>
+                        <Button style={sliderStyles.sidebarButton} onClick={onToggle}>
+                            {!isOpen ? <BsChevronDoubleLeft/> : <BsChevronDoubleRight/>}
+                        </Button>
+                    </HStack>
 
                     {/* <IconButton position="absolute" right="32px" top="32px" icon={<FaChevronLeft/>} aria-label="open sidebar"/> */}
                     <HStack justifyContent="center" padding="32px 0px">
@@ -170,40 +196,45 @@ function App() {
                         {requestIsLoading ? null : <AlbumCoverPreview />}
                     </HStack>
 
-                    <ButtonGroup>
-                        <Button onClick={(e) => setAppState(AppState.LYRICS)}>Back</Button>
-                        <Button onClick={recreateCovers}>Re-generate</Button>
-                        {selectedCover !== -1 ? <Button
-                            onClick={e => setAppState(AppState.ASSETS)}>Next</Button> : null}
-                    </ButtonGroup>
-                </VStack>
-                <Sidebar />
-            </HStack>
-        );
-    }
-    let tshirts = null;
-    if (merch.includes(dummyAssetTypes[1])) {
-        tshirts =
-            <HStack justifyContent="center" padding="32px 0px">
-                <Grid
-                    templateColumns="repeat(4, 1fr)"
-                    gap={6}
-                >
-                    <GridItem>
-                        <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-                    </GridItem>
-                    <GridItem>
-                        <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-                    </GridItem>
-                    <GridItem>
-                        <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-                    </GridItem>
-                    <GridItem>
-                        <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-                    </GridItem>
-                </Grid>
-            </HStack>
-    }
+                  <ButtonGroup>
+                    <Button onClick={(e) => setAppState(AppState.LYRICS)}>Back</Button>
+                    <Button onClick={recreateCovers}>Re-generate</Button>
+                    {selectedCover !== -1 ? <Button
+                        onClick={e => setAppState(AppState.ASSETS)}>Next</Button> : null}
+                  </ButtonGroup>
+        </VStack>
+        <div style={sliderStyles.container}>
+
+          <Slide in={isOpen} style={{ zIndex: 3 }}>
+            <Sidebar/>
+          </Slide>
+        </div>
+      </HStack>
+    );
+  }
+  let tshirts = null;
+  if (merch.includes(dummyAssetTypes[1])) {
+    tshirts =
+        <HStack justifyContent="center" padding="32px 0px">
+          <Grid
+              templateColumns="repeat(4, 1fr)"
+              gap={6}
+          >
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+            <GridItem>
+              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+            </GridItem>
+          </Grid>
+        </HStack>
+  }
 
     if (appState === AppState.ASSETS) {
         return <>
