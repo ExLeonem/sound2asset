@@ -1,5 +1,5 @@
 import {send} from "vite";
-import {PromptParameters} from "./state.ts";
+import {PromptConfig, PromptRequest} from "./state.ts";
 
 class Api {
     private baseUrl: string;
@@ -8,15 +8,20 @@ class Api {
         this.baseUrl = baseUrl;
     }
 
-    createCover(file: File, lyrics: string) {
+    createCover(file: string, lyrics: string) {
         const body = {
             file: file,
-            lyrics: lyrics
+            lyrics: lyrics,
+            artists: [],
+            styles: [],
+            genres: [],
+            colors: []
         }
         this.sendPostRequest(body);
     }
 
-    recreateCover(file: File, lyrics: string, promptConfig: PromptParameters) {
+    recreateCover(file: string, lyrics: string, promptConfig: PromptConfig) {
+
         const body = {
             file: file,
             lyrics: lyrics,
@@ -28,7 +33,7 @@ class Api {
         this.sendPostRequest(body);
     }
 
-    sendPostRequest(body: object) {
+    sendPostRequest(body: PromptRequest) {
         fetch(this.baseUrl, {
             method: "POST",
             headers: {

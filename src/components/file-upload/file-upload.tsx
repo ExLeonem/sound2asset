@@ -6,7 +6,7 @@ import {useAtom} from "jotai";
 
 const FileUpload = () => {
 
-  const [uploaded_file, setUpdatedFile] = useAtom(audioFile);
+  const [fileToUpload, setFileToUpload] = useAtom(audioFile);
 
   const uploadImage = () => {
     const element = document.getElementById("file-upload-field");
@@ -16,11 +16,20 @@ const FileUpload = () => {
   }
 
   const setFileInState = (e) => {
-    if (e.target.files.length!) {
-      setUpdatedFile(e.target.files[0])
+    let file = null;
+    if (e.target.files!) {
+      console.log("File uploaded");
+      file = e.target.files;
+      setFileToUpload(e.target.files[0])
+
+      const fileReader = new FileReader();
+      fileReader.readAsBinaryString(file);
+      fileReader.onload = () => {
+        let fileBinary = fileReader.result;
+        setFileToUpload(btoa(fileBinary as string))
+      }
     }
   }
-
 
   return <HStack className={styles.fileUpload} onClick={uploadImage}>
     <Button>

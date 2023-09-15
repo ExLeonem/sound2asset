@@ -37,7 +37,7 @@ function App() {
   const [selectedColors, setSelectedColors] = useAtom(colors);
 
   const createCoversAndUpdate = () => {
-    api.createCover(fileToUpload as File, songLyrics);
+    api.createCover(fileToUpload, songLyrics);
     setAppState(AppState.COVER);
   }
 
@@ -73,7 +73,7 @@ function App() {
       genres: selectedGenres,
       colors: selectedColors
     };
-    api.recreateCover(fileToUpload as File, songLyrics, promptConfig);
+    api.recreateCover(fileToUpload, songLyrics, promptConfig);
   }
 
   if (appState === AppState.COVER) {

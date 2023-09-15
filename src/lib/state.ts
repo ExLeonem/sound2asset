@@ -6,13 +6,18 @@ export const styles = atom<string[]>([]);
 export const genres = atom<string[]>([]);
 export const artists = atom<string[]>([]);
 export const assets = atom<string[]>([]);
-export const audioFile = atom<File>(null);
+export const audioFile = atom<string>(null);
 
-export interface PromptParameters {
+export interface PromptConfig {
     artists: string[];
     colors: string[];
     genres: string[];
     styles: string[];
+}
+
+export interface PromptRequest extends PromptConfig {
+    file: string,
+    lyrics: string
 }
 
 export const coverIdx = atom<number>(-1);
