@@ -53,6 +53,9 @@ const dummySocialMediaTypes = [
 ]
 
 const dummyTshirtUrls = [
+    "https://www.rudecru.com/eu/27680-thickbox_default/premium-t-shirt-red.jpg",
+    "https://www.shirt-king.de/media/image/be/92/be/Creator_Worker-Blue_Packshot_Front_Main_0.jpg",
+    "https://www.textil-grosshandel.eu/out/pictures/generated/produkt/EP0110PBL/450_450_85/EarthPositive_10er-Pack-Unisex-Organic-T-Shirt---Schwarz__Black.jpg",
     "https://media.istockphoto.com/id/482948743/photo/blank-white-t-shirt-front-with-clipping-path.jpg?s=612x612&w=0&k=20&c=cJG_B0mOIG42FKtC_rqIeZCClYOj7UCFNNs9WTkYEEE="
 ]
 

@@ -2,7 +2,7 @@ import "./App.css";
 import Header from "./components/header/header.tsx";
 import FileUpload from "./components/file-upload/file-upload.tsx";
 import Sidebar from "./components/sidebar/sidebar.tsx";
-import {Button, Grid, GridItem, HStack, Text, Textarea, VStack} from "@chakra-ui/react";
+import {Button, Grid, GridItem, HStack, Text, Textarea, useToast, VStack} from "@chakra-ui/react";
 import {useAtom} from "jotai";
 import {
   AppState,
@@ -44,13 +44,14 @@ function App() {
     setAppState(AppState.COVER);
   }
 
+  const toast = useToast();
+
   if (appState === AppState.LYRICS) {
     return (
       <>
-        <Header main={"sound2assets"}>
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed <br />{" "}
-          diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-          erat, sed diam voluptua.
+        <Header main={"Sound2assets"}>
+          Das beste Tool der Welt, um dir ganz unkompliziert Merch zu deinem neusten Song zu generieren!
+          Damit die KI Material hat um dir zu helfen, lade deinen Song hoch und gib die Lyrics zu deinem Song ein.
         </Header>
 
         <VStack alignItems="flex-start" marginTop="32px" gap={4}>
@@ -83,8 +84,8 @@ function App() {
     return (
       <HStack alignItems="flex-start" justifyContent="space-between">
         <VStack>
-          <Header main={"Select a cover"}>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+          <Header main={"Wähle ein Cover"}>
+            Hier sind einige von KI erstellte Cover, die zu deinem Lied passen könnten.
           </Header>
 
           {/* <IconButton position="absolute" right="32px" top="32px" icon={<FaChevronLeft/>} aria-label="open sidebar"/> */}
@@ -112,7 +113,7 @@ function App() {
 
           <ButtonGroup>
             <Button onClick={(e) => setAppState(AppState.LYRICS)}>Back</Button>
-            <Button onClick={recreateCovers}>Re-generate</Button>
+            <Button onClick={recreateCovers}>Neu erstellen</Button>
             {selectedCover !== -1 ? <Button onClick={e => setAppState(AppState.ASSETS)}>Next</Button> : null}
           </ButtonGroup>
         </VStack>
@@ -120,65 +121,71 @@ function App() {
       </HStack>
     );
   }
-  console.log(merch)
+
   let tshirts = null;
   if (merch.includes(dummyAssetTypes[1])) {
     tshirts =
-        <HStack justifyContent="center" padding="32px 0px">
-          <Grid
-              templateColumns="repeat(4, 1fr)"
-              gap={6}
-          >
-            <GridItem>
-              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-            </GridItem>
-            <GridItem>
-              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-            </GridItem>
-            <GridItem>
-              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-            </GridItem>
-            <GridItem>
-              <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
-            </GridItem>
-          </Grid>
-        </HStack>
+        <div>
+          <HStack justifyContent="center" padding="32px 0px">
+            <Grid
+                templateColumns="repeat(4, 1fr)"
+                gap={6}
+            >
+              <GridItem>
+                <MerchPreview tshirtUrl={dummyTshirtUrls[0]}></MerchPreview>
+              </GridItem>
+              <GridItem>
+                <MerchPreview tshirtUrl={dummyTshirtUrls[1]}></MerchPreview>
+              </GridItem>
+              <GridItem>
+                <MerchPreview tshirtUrl={dummyTshirtUrls[2]}></MerchPreview>
+              </GridItem>
+              <GridItem>
+                <MerchPreview tshirtUrl={dummyTshirtUrls[3]}></MerchPreview>
+              </GridItem>
+            </Grid>
+          </HStack>
+          <div align="right">
+            <Button onClick={(e) => toast({
+              title: 'Bestellung',
+              description: "Die T-shirts wurden für dich bestellt. ",
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            })}>Bestellen</Button>
+          </div>
+        </div>
+
   }
 
   if (appState === AppState.ASSETS) {
     return <>
-      <Header main="Welche Assets sollen erstellt werden?">
-      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+      <Header main="Poster, Merch & Co">
+      Welche Assets sollen erstellt werden?
       </Header>
 
       <Selection values={dummyAssetTypes} atomToUse={assets}/>
       {tshirts}
       <Header main="Social Media Posts">
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+        Welche Social Media Posts möchtest du dir generieren lassen?
       </Header>
 
       <Selection values={dummySocialMediaTypes} atomToUse={socialMediaTypes}/>
+      <div align="right">
+        <ButtonGroup>
+          <Button onClick={(e) => setAppState(AppState.COVER)}>Zurück</Button>
+          <Button align="right" onClick={(e) => toast({
+            title: 'Daten heruntergeladen',
+            description: "Der Merchandise wurde für dich heruntergeladen",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })}>Herunterladen</Button>
+        </ButtonGroup>
+      </div>
 
-      <ButtonGroup>
-        <Button onClick={(e) => setAppState(AppState.COVER)}>Back</Button>
-        <Button onClick={(e) => setAppState(AppState.PREVIEW)}>Next</Button>
-      </ButtonGroup>
     </>
   }
-
-  return <>
-    <Text fontSize="3xl">Congratulations</Text>
-    <Text fontSize="lg">Here are your assets.</Text>
-
-    <HStack>
-
-    </HStack>
-
-    <ButtonGroup>
-      <Button>Restart</Button>
-      <Button>Download</Button>
-    </ButtonGroup>
-  </>;
 }
 
 export default App;
