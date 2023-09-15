@@ -1,31 +1,45 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Header from "./components/header/header.tsx";
 import FileUpload from "./components/file-upload/file-upload.tsx";
 import Sidebar from "./components/sidebar/sidebar.tsx";
-import Tag from "./components/tag/tag.tsx";
+import {Button, Grid, GridItem, HStack, Text, Textarea, VStack,} from "@chakra-ui/react";
+import {useAtom} from "jotai";
 import {
-  Button,
-  HStack,
-  Textarea,
-  VStack,
-  Text,
-  Grid,
-  GridItem,
-} from "@chakra-ui/react";
-import { useAtom } from "jotai";
-import { AppState, assets, coverIdx, dummyAssetTypes, dummySocialMediaTypes, lyrics, socialMediaTypes, stage } from "./lib/state.ts";
+  AppState,
+  artists,
+  assets,
+  audioFile,
+  colors,
+  coverIdx,
+  dummyAssetTypes,
+  dummySocialMediaTypes,
+  genres,
+  lyrics,
+  socialMediaTypes,
+  stage,
+  styles
+} from "./lib/state.ts";
 import ButtonGroup from "./components/button-group/button-group.tsx";
 import CoverPreview from "./components/cover-preview/cover-preview.tsx";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Selection from "./components/sidebar/selection.tsx";
+import Api from "./lib/api.ts";
+
+const api = new Api("localhost/");
 
 function App() {
   const [appState, setAppState] = useAtom(stage);
   const [songLyrics, setSongLyrics] = useAtom(lyrics);
   const [selectedCover, setSelectedCover] = useAtom(coverIdx);
+  const [fileToUpload, setFileToUpload] = useAtom(audioFile);
+  const [selectedStyles, setSelectedStyles] = useAtom(styles);
+  const [selectedGenres, setSelectedGenres] = useAtom(genres);
+  const [selectedArtists, setSelectedArtists] = useAtom(artists);
+  const [selectedColors, setSelectedColors] = useAtom(colors);
+
+  const createCoversAndUpdate = () => {
+    api.createCover(fileToUpload as File, songLyrics);
+    setAppState(AppState.COVER);
+  }
 
   if (appState === AppState.LYRICS) {
     return (
@@ -46,10 +60,20 @@ function App() {
         </VStack>
 
         <ButtonGroup>
-          <Button onClick={(e) => setAppState(AppState.COVER)}>Next</Button>
+          <Button onClick={createCoversAndUpdate}>Next</Button>
         </ButtonGroup>
       </>
     );
+  }
+
+  const recreateCovers = () => {
+    let promptConfig = {
+      artists: selectedArtists,
+      styles: selectedStyles,
+      genres: selectedGenres,
+      colors: selectedColors
+    };
+    api.recreateCover(fileToUpload as File, songLyrics, promptConfig);
   }
 
   if (appState === AppState.COVER) {
@@ -85,7 +109,7 @@ function App() {
 
           <ButtonGroup>
             <Button onClick={(e) => setAppState(AppState.LYRICS)}>Back</Button>
-            {selectedCover !== -1 ? <Button>Re-generate</Button> : null}
+            <Button onClick={recreateCovers}>Re-generate</Button>
             {selectedCover !== -1 ? <Button onClick={e => setAppState(AppState.ASSETS)}>Next</Button> : null}
           </ButtonGroup>
         </VStack>
@@ -124,7 +148,7 @@ function App() {
     </HStack>
 
     <ButtonGroup>
-      <Button>Back</Button>
+      <Button>Restart</Button>
       <Button>Download</Button>
     </ButtonGroup>
   </>;
