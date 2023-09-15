@@ -6,6 +6,7 @@ import Header from "./components/header/header.tsx";
 import FileUpload from "./components/file-upload/file-upload.tsx";
 import Sidebar from "./components/sidebar/sidebar.tsx";
 import Tag from "./components/tag/tag.tsx";
+import {BsChevronDoubleLeft, BsChevronDoubleRight} from "react-icons/bs"
 import {
   Button,
   HStack,
@@ -14,9 +15,13 @@ import {
   Text,
   Grid,
   GridItem,
+  flexbox,
+  Flex,
+  Slide,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useAtom } from "jotai";
-import { AppState, assets, coverIdx, dummyAssetTypes, dummySocialMediaTypes, lyrics, socialMediaTypes, stage } from "./lib/state.ts";
+import { AppState, assets, coverIdx, dummyAssetTypes, dummySocialMediaTypes, lyrics, socialMediaTypes, stage, sidebarOpen } from "./lib/state.ts";
 import ButtonGroup from "./components/button-group/button-group.tsx";
 import CoverPreview from "./components/cover-preview/cover-preview.tsx";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -26,6 +31,20 @@ function App() {
   const [appState, setAppState] = useAtom(stage);
   const [songLyrics, setSongLyrics] = useAtom(lyrics);
   const [selectedCover, setSelectedCover] = useAtom(coverIdx);
+  const { isOpen, onToggle } = useDisclosure()
+
+  const styles = {
+    container: {
+      display: 'flex'
+    },
+    sidebarButton : {
+      border: 'none',
+      marginTop: '30px',
+      backgroundColor: 'white',
+      fontSize: 'x-large',
+      zIndex: 10
+    }
+  }
 
   if (appState === AppState.LYRICS) {
     return (
@@ -89,7 +108,14 @@ function App() {
             {selectedCover !== -1 ? <Button onClick={e => setAppState(AppState.ASSETS)}>Next</Button> : null}
           </ButtonGroup>
         </VStack>
-        <Sidebar />
+        <div style={styles.container}>
+          <Button style={styles.sidebarButton} onClick={onToggle}>
+            {!isOpen ? <BsChevronDoubleLeft/> : <BsChevronDoubleRight/>}
+            </Button>
+            <Slide in={isOpen} style={{ zIndex: 3 }}>
+              <Sidebar/>
+            </Slide>
+        </div>
       </HStack>
     );
   }
